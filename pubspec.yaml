@@ -24,6 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_vlc_player: ^4.0.3
+  regexed_validator: ^1.0.4
+  google_fonts: ^1.1.0 #Para obtener las fuentes directamente desde google fonts en vez de descargarlas y añadirlas a mano
+  shared_preferences: any #Para guardar cfg y verificar si es la primera vez usando la app
 
 
   # The following adds the Cupertino Icons font to your application.

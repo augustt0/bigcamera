@@ -48,43 +48,48 @@ class _CameraPageState extends State {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).orientation == Orientation.portrait ? 540 : 300,
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: MediaQuery.of(context).orientation == Orientation.landscape ? channels : 2),
-        itemCount: 4,
-        itemBuilder: (context, i){
-          return InkWell(
-            child: Card(
-              color: Colors.white10,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(5),
-                child: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: Container(
-                      child: VlcPlayer(
-                        aspectRatio: 1 / 1,
-                        url: "rtsp://$ip:$port/live${i + 1}.264?user=$user&passwd=$passwd",
-                        controller: _videoViewController,
-                        placeholder: Center(child: CircularProgressIndicator()),
+    return Material(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Container(
+          height: MediaQuery.of(context).orientation == Orientation.portrait ? 540 : 300,
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: MediaQuery.of(context).orientation == Orientation.landscape ? channels : 2),
+            itemCount: 4,
+            itemBuilder: (context, i){
+              return InkWell(
+                child: Card(
+                  color: Colors.white10,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: Container(
+                          child: VlcPlayer(
+                            aspectRatio: 1 / 1,
+                            url: "rtsp://$ip:$port/live${i + 1}.264?user=$user&passwd=$passwd",
+                            controller: _videoViewController,
+                            placeholder: Center(child: CircularProgressIndicator()),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FullView(connection: "rtsp://$ip:$port/live${i + 1}.264?user=$user&passwd=$passwd",)),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FullView(connection: "rtsp://$ip:$port/live${i + 1}.264?user=$user&passwd=$passwd",)),
+                  );
+                },
               );
             },
-          );
-        },
+          ),
+        ),
       ),
     );
   }
