@@ -1,5 +1,7 @@
 import 'package:bigcamera/CameraPage.dart';
 import 'package:bigcamera/Dialog.dart';
+import 'package:bigcamera/SaveDialog.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,8 +17,22 @@ class _MainPageState extends State {
   String ip;
   String port;
 
-  String user;
-  String pass;
+  bool usesUser = false;
+
+  String user = "";
+  String pass = "";
+
+  List<String> cameraList = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  Future<List<String>> cargarCamaras() {
+
+  }
 
   void connect() {
     Navigator.push(
@@ -31,7 +47,7 @@ class _MainPageState extends State {
   }
 
   void save() {
-    showDialog(context: context, builder: (BuildContext context) => CustomDialog(title: "Atención", description: "¿Desea guardar la IP $ip?",));
+    showDialog(context: context, builder: (BuildContext context) => SaveDialog(ip: ip, port: port, user: usesUser ? user : "", pass: usesUser ? pass : "",));
   }
 
   @override
@@ -127,6 +143,77 @@ class _MainPageState extends State {
                           return null;
                         },
                       ),
+                      CheckboxListTile(
+                        checkColor: Colors.white,
+                          activeColor: Colors.blue,
+                          title: Text("Credenciales", style: TextStyle(color: Colors.white54),),
+                          value: usesUser,
+                          onChanged: (value) {
+                            setState(() {
+                              usesUser = value;
+                            });
+                          }
+                          ),
+                      usesUser ? ExpandablePanel(
+                        header: Padding(
+                          padding: EdgeInsets.only(top: 15, left: 15),
+                          child: Text("Usuario", style: TextStyle(color: Colors.white54),),
+                        ),
+                        collapsed: Container(),
+                        expanded: Column(
+                          children: [
+                            TextFormField(
+                              textCapitalization: TextCapitalization.words,
+                              cursorColor: Colors.yellow,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.singleLineFormatter
+                              ],
+                              style: TextStyle(color: Colors.white70),
+                              decoration: new InputDecoration(
+                                focusedBorder: new OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blue),
+                                ),
+                                contentPadding: EdgeInsets.only(
+                                    left: 15, bottom: 11, top: 11, right: 15),
+                                hintText: "Usuario",
+                                hintStyle: TextStyle(color: Colors.white54),
+                              ),
+                              onSaved: (String val) {
+                                usesUser ? user = val : user = "";
+                              },
+                              validator: (value) {
+                                if(usesUser && value.isEmpty){
+                                  return "Este campo es obligatorio si usa credenciales";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              textCapitalization: TextCapitalization.words,
+                              cursorColor: Colors.yellow,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.singleLineFormatter
+                              ],
+                              style: TextStyle(color: Colors.white70),
+                              decoration: new InputDecoration(
+                                focusedBorder: new OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blue),
+                                ),
+                                contentPadding: EdgeInsets.only(
+                                    left: 15, bottom: 11, top: 11, right: 15),
+                                hintText: "Contraseña",
+                                hintStyle: TextStyle(color: Colors.white54),
+                              ),
+                              onSaved: (String val) {
+                                usesUser ? pass = val : pass = "";
+                              },
+                              validator: (value) {
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ) : Container(),
                     ],
                   ),
                 ),
@@ -134,12 +221,13 @@ class _MainPageState extends State {
             ),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
                 padding: EdgeInsets.all(5),
                 child: RaisedButton(
                   child: Text(
-                    "Guardar y conectar",
+                    "Guardar",
                     style: TextStyle(color: Colors.white),
                   ),
                   color: Colors.blue,
@@ -148,7 +236,11 @@ class _MainPageState extends State {
                   ),
                   elevation: 3,
                   onPressed: () {
-                    save();
+                    final FormState form = _formKey.currentState;
+                    if (_formKey.currentState.validate()) {
+                      form.save();
+                      save();
+                    }
                   },
                 ),
               ),
@@ -175,6 +267,7 @@ class _MainPageState extends State {
               ),
             ],
           ),
+          GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: ), itemBuilder: null)
         ],
       ),
     );
