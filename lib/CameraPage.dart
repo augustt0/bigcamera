@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:bigcamera/FullView.dart';
@@ -31,6 +32,7 @@ class _CameraPageState extends State {
   VlcPlayerController _videoViewController;
 
   _CameraPageState({this.ip, this.port, this.user, this.passwd});
+  Timer timer;
 
   @override
   void initState() {

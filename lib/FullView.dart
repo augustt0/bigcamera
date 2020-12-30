@@ -32,26 +32,29 @@ class _FullViewState extends State<FullView> {
         backgroundColor: Colors.black,
         body: Center(
           child: Container(
-            height: 500,
-            child: Card(
-              color: Colors.white10,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(5),
-                child: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: Container(
-                      child: VlcPlayer(
-                        options: [
-                          ""
-                        ],
-                        aspectRatio: 1 / 1,
-                        url: connection,
-                        controller: _videoViewController,
-                        placeholder: Center(child: CircularProgressIndicator()),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Card(
+                color: Colors.white10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: Container(
+                        height: 500,
+                        child: VlcPlayer(
+                          options: [
+                            ""
+                          ],
+                          aspectRatio: 1 / 1,
+                          url: connection,
+                          controller: _videoViewController,
+                          placeholder: Center(child: CircularProgressIndicator()),
+                        ),
                       ),
                     ),
                   ),

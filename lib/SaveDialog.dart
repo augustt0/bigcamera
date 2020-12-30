@@ -66,9 +66,13 @@ class _CustomSaveDialog extends State with SingleTickerProviderStateMixin{
     dataChunk = dataChunk + name + ";" + ip + ";" + port + ";" + user + ";" + pass + ";";
     List<String> savedData = prefs.getStringList("cameras") ?? [];
 
+    int x = prefs.getInt("camerasCount") ?? 0;
+
     savedData.add(dataChunk);
 
     prefs.setStringList("cameras", savedData);
+
+    prefs.setInt("camerasCount", x + 1);
 
     Toast.show("Se ha guardado $name con IP $ip", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
 
