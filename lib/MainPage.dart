@@ -38,11 +38,13 @@ class _MainPageState extends State {
       cameraList = cargarCamaras();
     });
     cameraList = cargarCamaras();
+    SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
   @override
   void dispose() {
     timer?.cancel();
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     super.dispose();
   }
 
@@ -333,6 +335,7 @@ class _MainPageState extends State {
                       scrollDirection: Axis.horizontal,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: snapshot.data.length),
+                      itemCount: snapshot.data.length,
                       itemBuilder: (context, i) {
                         String data = snapshot.data[i];
                         String aName = data.split(";")[0];

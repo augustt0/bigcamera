@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: GoogleFonts.workSansTextTheme(
             Theme.of(context).textTheme,
-          )
+          ),
       ),
       home: MainPage(),
     );
