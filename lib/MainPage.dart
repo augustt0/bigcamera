@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bigcamera/CameraPage.dart';
 import 'package:bigcamera/Dialog.dart';
 import 'package:bigcamera/SaveDialog.dart';
@@ -334,7 +335,7 @@ class _MainPageState extends State {
                   child: snapshot.data.length > 0 ? GridView.builder(
                       scrollDirection: Axis.horizontal,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: snapshot.data.length),
+                          crossAxisCount: 1),
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, i) {
                         String data = snapshot.data[i];
@@ -356,8 +357,8 @@ class _MainPageState extends State {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(aName, style: TextStyle(color: Colors.white),),
-                                    Text(aIp + ":$aPort", style: TextStyle(color: Colors.blue),),
+                                    AutoSizeText(aName, style: TextStyle(color: Colors.white), textAlign: TextAlign.center, maxLines: 1, minFontSize: 12, maxFontSize: 16,),
+                                    AutoSizeText(aIp + ":$aPort", style: TextStyle(color: Colors.blue), maxLines: 1, minFontSize: 12, maxFontSize: 16,),
                                   ],
                                 ),
                               ),

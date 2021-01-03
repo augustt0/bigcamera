@@ -89,11 +89,11 @@ class _CameraPageState extends State {
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
-        backgroundColor: Colors.black,
-        body: MediaQuery.of(context).orientation == Orientation.landscape ? Center(
-          child: cameraView(),
-        ) : cameraView()
-      ),
+          backgroundColor: Colors.black,
+          body: MediaQuery.of(context).orientation == Orientation.landscape ? Center(
+            child: cameraView(),
+          ) : cameraView()
+      )
     );
   }
 
@@ -136,10 +136,12 @@ class _CameraPageState extends State {
                     ),
                   ),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FullView(connection: "rtsp://$ip:$port/live${i + 1}.264?user=$user&passwd=$passwd",)),
-                    );
+                    showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) => FullView(
+                          connection: "rtsp://$ip:$port/live${i + 1}.264?user=$user&passwd=$passwd",
+                        ));
                   },
                 );
               },

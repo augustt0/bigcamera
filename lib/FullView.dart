@@ -27,35 +27,39 @@ class _FullViewState extends State<FullView> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: Center(
-          child: Container(
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: Card(
-                color: Colors.white10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0),
-                      child: Container(
-                        height: 500,
-                        child: VlcPlayer(
-                          options: [
-                            ""
-                          ],
-                          aspectRatio: 1 / 1,
-                          url: connection,
-                          controller: _videoViewController,
-                          placeholder: Center(child: CircularProgressIndicator()),
-                        ),
-                      ),
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Card(
+          color: Colors.white10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(5),
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: Container(
+                  height: 500,
+                  child: InteractiveViewer(
+                    panEnabled: false, // Set it to false to prevent panning.
+                    boundaryMargin: EdgeInsets.all(0),
+                    minScale: 1,
+                    maxScale: 4,
+                    child: VlcPlayer(
+                      options: [
+                        ""
+                      ],
+                      aspectRatio: 1 / 1,
+                      url: connection,
+                      controller: _videoViewController,
+                      placeholder: Center(child: CircularProgressIndicator()),
                     ),
                   ),
                 ),
