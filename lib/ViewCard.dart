@@ -71,6 +71,15 @@ class ViewCard extends StatelessWidget {
                       right: 0,
                       bottom: 0,
                       child: VlcPlayer(
+                        isLocalMedia: false,
+                        options: [
+                          '--quiet',
+                          //'-vvv',
+                          '--no-drop-late-frames',
+                          '--no-skip-frames',
+                          '--rtsp-tcp',
+                        ],
+                        hwAcc: HwAcc.AUTO,
                         aspectRatio: 1 / 1,
                         url: "rtsp://$ip:$port/live${index + 1}.264?user=$user&passwd=$passwd",
                         controller: _videoViewController,

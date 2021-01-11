@@ -91,7 +91,7 @@ class _CameraPageState extends State {
   }
 
   Future<bool> verifyUrl() async{
-    bool x = false;
+
     String index = "1";
     List<String> urls = [
       "rtsp://$ip:$port/live$index.264?user=$user&passwd=$passwd",
@@ -105,17 +105,6 @@ class _CameraPageState extends State {
       "rtsp://$ip:$port/$index/profile2/media.smp",
       "rtsp://$ip:$port/media/video$index",
     ];
-
-    for(int i = 0; i < urls.length; i++){
-      if(!x){
-        var response = await http.get(urls[i]);
-        if(response.statusCode == 200){
-          finalUrl = urls[i];
-          x = true;
-        }
-      }
-    }
-    return x;
   }
 
   @override
@@ -123,29 +112,9 @@ class _CameraPageState extends State {
     return Material(
       child: Scaffold(
           backgroundColor: Colors.black,
-          body: FutureBuilder(
-            future: verifyUrl(),
-            builder: (context, AsyncSnapshot<bool> snapshot){
-              if(snapshot.hasData){
-                if(snapshot.data){
-                  return MediaQuery.of(context).orientation == Orientation.landscape ? Center(
-                    child: cameraView(),
-                  ) : cameraView();
-                }else{
-                  return Column(
-                    children: [
-                      Text("No se han podido encontrar las cámaras IP. Verifique la información provista.\nPuede usar esta lista para corroborar:"),
-                      Text("● Verifique la dirección IP."),
-                      Text("● Verifique el puerto."),
-                      Text("● Verifique el usuario y contraseña."),
-                      Text("● Si esta accediendo desde una red externa verifique si el puerto requerido está abierto en su enrutador."),
-                    ],
-                  );
-                }
-              }
-              return Center(child: CircularProgressIndicator(),);
-            },
-          )
+          body: MediaQuery.of(context).orientation == Orientation.landscape ? Center(
+            child: cameraView(),
+          ) : cameraView()
       )
     );
   }

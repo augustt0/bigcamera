@@ -53,9 +53,15 @@ class _FullViewState extends State<FullView> {
                     minScale: 1,
                     maxScale: 4,
                     child: VlcPlayer(
+                      isLocalMedia: false,
                       options: [
-                        ""
+                        '--quiet',
+                        //'-vvv',
+                        '--no-drop-late-frames',
+                        '--no-skip-frames',
+                        '--rtsp-tcp',
                       ],
+                      hwAcc: HwAcc.AUTO,
                       aspectRatio: 1 / 1,
                       url: connection,
                       controller: _videoViewController,
