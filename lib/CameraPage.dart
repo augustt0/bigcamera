@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:bigcamera/FullView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+
+import 'package:http/http.dart' as http;
+
+
+import 'ViewCard.dart';
 
 class CameraPage extends StatefulWidget {
   String ip;
@@ -24,6 +27,8 @@ class _CameraPageState extends State {
 
   String user;
   String passwd;
+
+  String finalUrl = "";
   
   int channels = 4;
 
@@ -85,14 +90,62 @@ class _CameraPageState extends State {
     return x;
   }
 
+  Future<bool> verifyUrl() async{
+    bool x = false;
+    String index = "1";
+    List<String> urls = [
+      "rtsp://$ip:$port/live$index.264?user=$user&passwd=$passwd",
+      "rtsp://$user:$passwd@$ip:$port",
+      "rtsp://$ip:$port/h264.sdp$index?profile=profile_1",
+      "rtsp://$ip:$port/channel$index",
+      "rtsp://$ip:$port/streaming/channels/$index",
+      "rtsp://$ip:$port/ch$index",
+      "rtsp://$ip:$port/CH00$index.sdp",
+      "rtsp://$ip:$port/ch$index/main/av_stream",
+      "rtsp://$ip:$port/$index/profile2/media.smp",
+      "rtsp://$ip:$port/media/video$index",
+    ];
+
+    for(int i = 0; i < urls.length; i++){
+      if(!x){
+        var response = await http.get(urls[i]);
+        if(response.statusCode == 200){
+          finalUrl = urls[i];
+          x = true;
+        }
+      }
+    }
+    return x;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
           backgroundColor: Colors.black,
-          body: MediaQuery.of(context).orientation == Orientation.landscape ? Center(
-            child: cameraView(),
-          ) : cameraView()
+          body: FutureBuilder(
+            future: verifyUrl(),
+            builder: (context, AsyncSnapshot<bool> snapshot){
+              if(snapshot.hasData){
+                if(snapshot.data){
+                  return MediaQuery.of(context).orientation == Orientation.landscape ? Center(
+                    child: cameraView(),
+                  ) : cameraView();
+                }else{
+                  return Column(
+                    children: [
+                      Text("No se han podido encontrar las cámaras IP. Verifique la información provista.\nPuede usar esta lista para corroborar:"),
+                      Text("● Verifique la dirección IP."),
+                      Text("● Verifique el puerto."),
+                      Text("● Verifique el usuario y contraseña."),
+                      Text("● Si esta accediendo desde una red externa verifique si el puerto requerido está abierto en su enrutador."),
+                    ],
+                  );
+                }
+              }
+              return Center(child: CircularProgressIndicator(),);
+            },
+          )
       )
     );
   }
@@ -108,42 +161,7 @@ class _CameraPageState extends State {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossCount()),
               itemCount: channels,
               itemBuilder: (context, i){
-                VlcPlayerController _videoViewController;
-                _videoViewController = new VlcPlayerController(onInit: () {
-                  _videoViewController.play();
-                });
-                return InkWell(
-                  child: Card(
-                    color: Colors.white10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Container(
-                            child: VlcPlayer(
-                              aspectRatio: 1 / 1,
-                              url: "rtsp://$ip:$port/live${i + 1}.264?user=$user&passwd=$passwd",
-                              controller: _videoViewController,
-                              placeholder: Center(child: CircularProgressIndicator()),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) => FullView(
-                          connection: "rtsp://$ip:$port/live${i + 1}.264?user=$user&passwd=$passwd",
-                        ));
-                  },
-                );
+                return ViewCard(ip: ip, port: port, index: i, user: user, passwd: passwd);
               },
             ),
           ),
