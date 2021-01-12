@@ -75,9 +75,9 @@ class ViewCard extends StatelessWidget {
                         options: [
                           '--quiet',
                           //'-vvv',
-                          '--no-drop-late-frames',
                           '--no-skip-frames',
                           '--rtsp-tcp',
+                          '--network-caching=0',
                         ],
                         hwAcc: HwAcc.AUTO,
                         aspectRatio: 1 / 1,

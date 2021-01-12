@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
+import 'package:http/io_client.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -90,21 +93,42 @@ class _CameraPageState extends State {
     return x;
   }
 
-  Future<bool> verifyUrl() async{
+  Future<String> getUrls() async{
 
-    String index = "1";
-    List<String> urls = [
-      "rtsp://$ip:$port/live$index.264?user=$user&passwd=$passwd",
-      "rtsp://$user:$passwd@$ip:$port",
-      "rtsp://$ip:$port/h264.sdp$index?profile=profile_1",
-      "rtsp://$ip:$port/channel$index",
-      "rtsp://$ip:$port/streaming/channels/$index",
-      "rtsp://$ip:$port/ch$index",
-      "rtsp://$ip:$port/CH00$index.sdp",
-      "rtsp://$ip:$port/ch$index/main/av_stream",
-      "rtsp://$ip:$port/$index/profile2/media.smp",
-      "rtsp://$ip:$port/media/video$index",
-    ];
+    //String url = "http://192.168.0.66:80/cgi-bin/jvsweb.cgi";
+
+    //String url = "http://192.168.0.66:80/cgi-bin/jvsweb.cgi?username=admin&cmd=yst&action=get_video";
+
+    final Map<String, String> _queryParameters = <String, String>{
+      "cmd":"yst",
+      "action": "get_video",
+    };
+
+    final msg = jsonEncode({"username": "admin", "cmd": "yst", "action": "get_video"});
+
+    var url = Uri.http("$ip:80", "/cgi-bin/jvsweb.cgi", _queryParameters);
+
+    Map<String, String> headers = {
+      'Content-Type':'application/json',
+    };
+
+    print("CONNECTING TO $url .......................");
+    print("HEADERS: $headers");
+
+    http.Client client = new http.Client();
+    var response = await client.read(url,);
+
+    /*
+    if (response.statusCode == 200) {
+      print("CONNECTION ESTABLISHED...........................");
+    }else{
+      print("CONNECTION FAILED.......................");
+      print("Couldn't get devices");
+    }
+    */
+    print("DONE.....................");
+
+    return response;
   }
 
   @override
@@ -138,7 +162,7 @@ class _CameraPageState extends State {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Canales: ", style: TextStyle(color: Colors.white, fontSize: 20),),
+                Text("Channels: ", style: TextStyle(color: Colors.white, fontSize: 20),),
                 DropdownButton(
                   value: channels.toString(),
                   items: <String>['4', '8', '16'].map((String value) {
@@ -156,9 +180,38 @@ class _CameraPageState extends State {
                 )
               ],
             ),
-          )
+          ),
         ],
       ),
+    );
+  }
+
+  Widget httpTest(){
+    return FutureBuilder(
+      future: getUrls(),
+      builder: (context, AsyncSnapshot<String> snapshot){
+        if(snapshot.hasData){
+          return Center(
+            child: Column(
+              children: [
+                Text("Status: ${snapshot.data}", style: TextStyle(color: Colors.white)),
+                //Text("Body: ${snapshot.data.body}", style: TextStyle(color: Colors.white)),
+              ],
+            ),
+          );
+        }
+        else if(snapshot.hasError){
+          return Center(child: Column(
+            children: [
+              Text("An error has occurred while trying to connect.", style: TextStyle(color: Colors.white),),
+              Text(snapshot.error.toString(), style: TextStyle(color: Colors.white),),
+            ],
+          ),);
+        }
+        else{
+          return Center(child: CircularProgressIndicator(),);
+        }
+      },
     );
   }
 
